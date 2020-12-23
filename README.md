@@ -1,5 +1,6 @@
 # Cartographer-using-Delta_III-Lidar
-@[toc]
+[TOC]
+
 ## Install Cartographer
 ```bash
 sudo apt install ros-melodic-cartographer
