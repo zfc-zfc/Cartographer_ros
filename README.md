@@ -1,62 +1,64 @@
 # Cartographer-using-Delta_III-Lidar
 @[toc]
-## Cartographer安装
+## Install Cartographer
 ```bash
 sudo apt install ros-melodic-cartographer
 sudo apt install ros-melodic-cartographer-ros
 sudo apt install ros-melodic-cartographer-ros-msgs
 ```
-之后可以在  `/opt/ros/melodic/share` 找到这三个包，若找不到可以用`rospack find packagename` 找到路径。
-### 跑一个bag试试
-#### 下载官网示例bag
+Then you can find these three packages in  `/opt/ros/melodic/share` . If not, type `rospack find packagename` in the terminal to find the path.
+
+### Run a demo bag
+#### Install a bag
 ```
 https://storage.googleapis.com/cartographer-public-data/bags/backpack_2d/cartographer_paper_deutsches_museum.bag
 ```
-复制此网址到浏览器，下载bag（470MB），名字为 `cartographer_paper_deutsches_museum.bag`，存储路径默认为 /home/username/Downloads
-#### 运行bag
+Copy this link to download the demo bag（470MB）named  `cartographer_paper_deutsches_museum.bag`. The default saving path is `/home/username/Downloads`
+#### Run the bag
 ```bash
 roslaunch cartographer_ros demo_backpack_2d.launch bag_filename:=${HOME}/Downloads/cartographer_paper_deutsches_museum.bag
 ```
-可以看到雷达的实时数据
+You could see the real-time laser scan data in rviz.
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20201223164011157.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZhbmdfY2hlbmdf,size_16,color_FFFFFF,t_70)
-点击左下角"Add"，可以添加一个名为 "/map" 的topic，即可看到建立的地图，如下
+Click the "Add" button, add an topic named "/map", the you can see the real-time updated map as follow.
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20201223164128517.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZhbmdfY2hlbmdf,size_16,color_FFFFFF,t_70)
-至此说明安装cartographer成功。
 
-## 让雷达动起来
-这一步涉及LiDAR的驱动安装，各种不同的雷达不太相同。此处以杉川的Delta_III为例，
-产品链接
+This implies you have installed cartographer successfully.
+
+## Start the LiDAR
+
+Weblink of Delta_III Lidar produced by 3irobotix:
 ```
 http://www.3irobotics.com/pro_s.php?id=168
 ```
-驱动安装和运行方法，详情见delta_III_ros
+To install the driver and make the Lidar run，please reference **delta_III_ros**
 
-### 雷达基本信息获取
-启动雷达 Delta_III
+### Acquire the needed info of Lidar
+Start the Lidar
 ```
 roslaunch delta_lidar view_delta_lidar.launch 
 ```
-可以在rviz中看到雷达扫描数据，然后用 `rostopic list` 查看雷达发布出来的话题名
+You could see the real-time laser scan data in rviz, then type `rostopic list` to acquire the topic name.
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20201223165054327.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZhbmdfY2hlbmdf,size_16,color_FFFFFF,t_70)
 
-此处本Delta_III雷达的输出topic为 /scan
-使用以下语句打印当前雷达输出:
+Here, Delta_III publishes a topic named **/scan**
+Print the information of /scan
 ```
 rostopic echo /scan
 ```
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20201223165257268.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZhbmdfY2hlbmdf,size_16,color_FFFFFF,t_70)
 
-在打印信息中找到坐标系名字frame_id: “laser”,此处坐标系名字为 laser
-## 文件修改
-### lua文件修改
-在 `/opt/ros/melodic/share/cartographer_ros/launch` 中找到revo_lds.lua 文件, 复制一份, 改名为my_revo_lds.lua
-由于权限原因，可以用如下方式复制文件：
-在此目录打开终端
+Find the frame_id: “laser”. This will be used later.
+## Modify Files
+### Modify .lua
+Find the file named revo_lds.lua in `/opt/ros/melodic/share/cartographer_ros/launch` , copy it and rename as `my_revo_lds.lua`
+Constrained by the **Insufficient Permissions**, you could complete the tasks as follow:
+Open a new terminal and cd `/opt/ros/melodic/share/cartographer_ros/launch`, then:
 ```bash
 sudo cp revo_lds.lua my_revo_lds.lua
 ```
-如下命令修改内容
+Modify the file:
 ```bash
 sudo gedit my_revo_lds.lua
 ```
