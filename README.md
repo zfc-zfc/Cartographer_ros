@@ -1,7 +1,7 @@
 # Cartographer-using-Delta_III-Lidar
 [TOC]
 
-## Install Cartographer
+## 1 Install Cartographer
 ```bash
 sudo apt install ros-melodic-cartographer
 sudo apt install ros-melodic-cartographer-ros
@@ -9,13 +9,13 @@ sudo apt install ros-melodic-cartographer-ros-msgs
 ```
 Then you can find these three packages in  `/opt/ros/melodic/share` . If not, type `rospack find packagename` in the terminal to find the path.
 
-### Run a demo bag
-#### Install a bag
+### 1.1 Run a demo bag
+#### 1.1.1 Install a bag
 ```
 https://storage.googleapis.com/cartographer-public-data/bags/backpack_2d/cartographer_paper_deutsches_museum.bag
 ```
 Copy this link to download the demo bag（470MB）named  `cartographer_paper_deutsches_museum.bag`. The default saving path is `/home/username/Downloads`
-#### Run the bag
+#### 1.1.2 Run the bag
 ```bash
 roslaunch cartographer_ros demo_backpack_2d.launch bag_filename:=${HOME}/Downloads/cartographer_paper_deutsches_museum.bag
 ```
@@ -27,7 +27,7 @@ Click the "Add" button, add an topic named "/map", the you can see the real-time
 
 This implies you have installed cartographer successfully.
 
-## Start the LiDAR
+## 2 Start the LiDAR
 
 Weblink of Delta_III Lidar produced by 3irobotix:
 ```
@@ -35,7 +35,7 @@ http://www.3irobotics.com/pro_s.php?id=168
 ```
 To install the driver and make the Lidar run，please reference **delta_III_ros**
 
-### Acquire the needed info of Lidar
+### 2.1 Acquire the needed info of Lidar
 Start the Lidar
 ```
 roslaunch delta_lidar view_delta_lidar.launch 
@@ -51,8 +51,8 @@ rostopic echo /scan
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20201223165257268.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZhbmdfY2hlbmdf,size_16,color_FFFFFF,t_70)
 
 Find the frame_id: “laser”. This will be used later.
-## Modify Files
-### Modify .lua
+## 3 Modify Files
+### 3.1 Modify .lua
 Find the file named **revo_lds.lua** in `/opt/ros/melodic/share/cartographer_ros/launch` , copy it and rename as `my_revo_lds.lua`
 Constrained by the **Insufficient Permissions**, you could complete the tasks as follow:
 Open a new terminal and cd `/opt/ros/melodic/share/cartographer_ros/launch`, then:
@@ -69,7 +69,7 @@ Open `my_revo_lds.lua`, implement the following modification:
 tracking_frame = "laser",
 published_frame = "laser",
 ```
-### Modify .launch
+### 3.2 Modify .launch
 Find the file named **demo_revo_leds.launch** in `/opt/ros/melodic/share/cartographer_ros/configuration_files`, copy it and rename as my_demo_revo_lds.launch
 修改以下内容:
 ```cpp
@@ -90,7 +90,7 @@ Find the file named **demo_revo_leds.launch** in `/opt/ros/melodic/share/cartogr
       args="--clock $(arg bag_filename)" />
 ```
 
-## Mapping
+## 4 Mapping
 Firstly start the lidar and assure that there is effictive output laser data topic.
 Then
 ```bash
@@ -98,7 +98,7 @@ roslaunch cartographer_ros my_demo_revo_lds.launch
 ```
 Start to construct a occupancy grid map..
 
-## Save the map
+## 5 Save the map
 Open another terminal and type: 
 
 //End the first trajectory, and no further data will be added.
