@@ -30,7 +30,7 @@ roslaunch cartographer_ros demo_backpack_2d.launch bag_filename:=${HOME}/Downloa
 ```
 http://www.3irobotics.com/pro_s.php?id=168
 ```
-驱动安装和运行方法，详情见github链接：
+驱动安装和运行方法，详情见delta_III_ros
 
 ### 雷达基本信息获取
 启动雷达 Delta_III
