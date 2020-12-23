@@ -1,5 +1,4 @@
 # Cartographer-using-Delta_III-Lidar
-[TOC]
 
 ## 1 Install Cartographer
 ```bash
