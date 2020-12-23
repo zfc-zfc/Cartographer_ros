@@ -52,7 +52,7 @@ rostopic echo /scan
 Find the frame_id: “laser”. This will be used later.
 ## Modify Files
 ### Modify .lua
-Find the file named revo_lds.lua in `/opt/ros/melodic/share/cartographer_ros/launch` , copy it and rename as `my_revo_lds.lua`
+Find the file named **revo_lds.lua** in `/opt/ros/melodic/share/cartographer_ros/launch` , copy it and rename as `my_revo_lds.lua`
 Constrained by the **Insufficient Permissions**, you could complete the tasks as follow:
 Open a new terminal and cd `/opt/ros/melodic/share/cartographer_ros/launch`, then:
 ```bash
@@ -62,53 +62,54 @@ Modify the file:
 ```bash
 sudo gedit my_revo_lds.lua
 ```
-打开my_revo_lds.lua, 修改以下两行为我们自己的坐标系名字:
+Open `my_revo_lds.lua`, implement the following modification:
 ```cpp
-//两行"horizontal_laser_link"均改为我们当前的"laser"
+//Change the original frame "horizontal_laser_link" into our "laser"
 tracking_frame = "laser",
 published_frame = "laser",
 ```
-### launch文件修改
-在`/opt/ros/melodic/share/cartographer_ros/configuration_files`, 复制一份, 改名为my_demo_revo_lds.launch
+### Modify .launch
+Find the file named **demo_revo_leds.launch** in `/opt/ros/melodic/share/cartographer_ros/configuration_files`, copy it and rename as my_demo_revo_lds.launch
 修改以下内容:
 ```cpp
-//因为非bag仿真,将以下true改为false
+//Since it's not bag simulation, set the following value as false.
 <param name="/use_sim_time" value="false" />
 
-//使用我们的配置文件,将revo_lds.lua改为my_revo_lds.lua
+//Use our own configuration: change revo_lds.lua into my_revo_lds.lua
 <node name="cartographer_node" pkg="cartographer_ros"
       type="cartographer_node" args="
           -configuration_directory $(find cartographer_ros)/configuration_files
           -configuration_basename my_revo_lds.lua"
 
-//将horizontal_laser_2d改为我们的输出话题scan
+//Change horizontal_laser_2d into our topic scan
 <remap from="scan" to="scan" />
 
-//不使用bag,删去以下内容
+//Delete the following codes.
 <node name="playbag" pkg="rosbag" type="play"
       args="--clock $(arg bag_filename)" />
 ```
 
-## 运行与建图
-运行时, 先运行雷达的相关topic, 保证雷达已有有效数据通过topic输出后, 运行我们的新launch文件:
+## Mapping
+Firstly start the lidar and assure that there is effictive output laser data topic.
+Then
 ```bash
 roslaunch cartographer_ros my_demo_revo_lds.launch
 ```
-即可开始建图.
+Start to construct a occupancy grid map..
 
-## 地图保存
-打开另一个终端, 输入以下语句:
+## Save the map
+Open another terminal and type: 
 
-//结束第一条轨迹,之后的数据不再添加.
+//End the first trajectory, and no further data will be added.
 `rosservice call /finish_trajectory 0`
 
 
-//cartographer序列化当前状态,形成pbstream文件
+//Generate a pbstream file
 `rosservice call /write_state "{filename: '${HOME}/Downloads/mymap.pbstream'}"`
 
 //transform pbstream to pgm and yaml
 ```
 rosrun cartographer_ros cartographer_pbstream_to_ros_map -map_filestem=/home/kai/Downloads/mymap -pbstream_filename=/home/kai/Downloads/mymap.pbstream -resolution=0.05
 ```
-地址和文件名根据实际进行修改.
+The address and file name could be modified according to your preference.
 
